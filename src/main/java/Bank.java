@@ -8,9 +8,19 @@
  * @see <a href="https://cs125.cs.illinois.edu/lab/5/">Lab 5 Description</a>
  */
 public class Bank {
-
-    public String bankName;
-
+    /**
+     * Name of bank.
+     */
+    private String bankName;
+    /**
+     * @return name of bank.
+     */
+    public String getBankName() {
+        return bankName;
+    }
+    /**
+     * Constructor that establishes the bank's name.
+     */
     public Bank() {
         bankName = "Illini Bank";
     }
@@ -26,9 +36,15 @@ public class Bank {
      * @return boolean
      */
     public boolean withdrawMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+        double x = bankAccount.getAccountBalance();
+        if (x - amount <= 0.0) {
+            System.out.println("Sorry, amount requested for withdrawal exceeds account balance.");
+            return false;
+        } else {
+            bankAccount.setAccountBalance(x - amount);
+            System.out.println(bankAccount.getOwnerName() + "'s account balance is " + bankAccount.getAccountBalance());
+            return true;
+        }
     }
 
     /**
@@ -42,9 +58,10 @@ public class Bank {
      * @return boolean
      */
     public boolean depositMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+        double x = bankAccount.getAccountBalance();
+        bankAccount.setAccountBalance(x + amount);
+        System.out.println(bankAccount.getOwnerName() + "'s account balance is " + bankAccount.getAccountBalance());
+        return true;
     }
 
     /**
@@ -61,9 +78,18 @@ public class Bank {
 
     public boolean transferMoney(final BankAccount source, final BankAccount destination,
             final double amount) {
-        /*
-         * Implement this function
-         */
+        double sourceBalance = source.getAccountBalance();
+        double destinationBalance = destination.getAccountBalance();
+        if (sourceBalance < amount) {
+            System.out.println("Sorry, amount requested for transfer exceeds account balance.");
+            return false;
+        } else {
+            source.setAccountBalance(sourceBalance - amount);
+            destination.setAccountBalance(destinationBalance + amount);
+            System.out.println(source.getOwnerName() + "'s account balance is " + source.getAccountBalance());
+            System.out.println(destination.getOwnerName() + "'s account balance is " + destination.getAccountBalance());
+            return true;
+        }
     }
 
     /**
@@ -74,21 +100,34 @@ public class Bank {
      */
 
     public void changeOwnerName(final BankAccount bankAccount, final String name) {
-        /*
-         * Implement this function
-         */
+        bankAccount.setOwnerName(name);
+        System.out.println("New owner's name is " + bankAccount.getOwnerName());
     }
 
-    public static int totalAccounts = 0;
+    /**
+     * number of accounts with the bank.
+     */
+    private static int totalAccounts = 0;
+
+    /**
+     * @param setTotalAccounts setter for total accounts.
+     */
+    public static void setTotalAccounts(final int setTotalAccounts) {
+        totalAccounts = setTotalAccounts;
+    }
+    /**
+     * @return totalAccounts
+     */
+    public static int getTotalAccounts() {
+        return totalAccounts;
+    }
     /**
      * Uses static variable to get number of bank accounts opened.
      *
-     * @return the total number of accounts
+     * returns the total number of accounts
      */
-    public static int getNumberOfAccount() {
-        /*
-         * Implement this function
-         */
+    public static void getNumberOfAccount() {
+        Bank.getTotalAccounts();
     }
 
     /**
@@ -114,13 +153,16 @@ public class Bank {
         bank.depositMoney(account2, 5000.0);
 
         // Withdraw money from Account 2 and print new balance
-        bank.withdrawMoney(account2, 200.0);
+        bank.withdrawMoney(account2, 1000.0);
 
         // Transfer money from Account 2 to Account 1 and print new balances
-        bank.transferMoney(account2, account1, 350.0);
+        bank.transferMoney(account2, account1, 4000.0);
 
         // Print number of accounts
         System.out.print("Number of active accounts at " + bank.bankName + " are ");
         System.out.println(Bank.totalAccounts);
+
+        // Change owner of account 2
+        bank.changeOwnerName(account2, "Jimmy Neutron");
     }
 }
